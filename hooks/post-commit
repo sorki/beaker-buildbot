@@ -1,0 +1,6 @@
+#!/bin/sh
+
+last_hash=$( git log -n 1 --pretty=format:"%H" )
+
+curl --max-time 30 http://localhost:8000/notify/$last_hash &
+exit 0
