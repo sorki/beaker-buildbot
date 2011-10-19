@@ -40,9 +40,6 @@ def main():
     print "Asyncore received %s" % git_hash
 
 
-    
-
-
 if __name__ == "__main__":
     main()
 
