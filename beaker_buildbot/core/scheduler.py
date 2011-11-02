@@ -16,7 +16,7 @@ class NightlyScheduler(BuildScheduler):
     Runs the tasks during the night
     '''
     def __init__(self, night_since=23, night_till=5):
-        self.night_sice = night_since
+        self.night_since = night_since
         self.night_till = night_till
 
     def schedule(self, task_queue):
@@ -62,7 +62,7 @@ class LoadAvareScheduler(BuildScheduler):
 class BeakerLoadAvareScheduler(LoadAvareScheduler):
     def __init__(self, free_systems = 15):
         super(BeakerLoadAvareScheduler, self).__init__(method=self.check_beaker,
-            hight = free_systems)
+            high = free_systems)
 
     def check_beaker(self):
         cmd = 'bkr list-systems --free'
@@ -70,7 +70,7 @@ class BeakerLoadAvareScheduler(LoadAvareScheduler):
         try:
             out = subprocess.check_output(cmd.split())
         except subprocess.CalledProcessError:
-            return 9001
+            return False
 
         # TODO: parse out
         return 20
