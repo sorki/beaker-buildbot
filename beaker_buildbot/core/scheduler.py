@@ -1,4 +1,5 @@
 import time
+import warnings
 import subprocess
 
 class BuildScheduler(object):
@@ -11,6 +12,12 @@ class BuildScheduler(object):
         '''
         raise NotImplemented
 
+    def take_params(self, param_list):
+        '''
+        Configuration of modules via list of strings
+        '''
+        warnings.warn('Module %s doesn\'t take parameters' % self)
+
 class NightlyScheduler(BuildScheduler):
     '''
     Runs the tasks during the night
@@ -18,6 +25,10 @@ class NightlyScheduler(BuildScheduler):
     def __init__(self, night_since=23, night_till=5):
         self.night_since = night_since
         self.night_till = night_till
+
+    def take_params(self, params):
+        self.night_since = int(params[0])
+        self.night_till = int(params[1])
 
     def schedule(self, task_queue):
         cur = time.localtime()
@@ -35,6 +46,9 @@ class CumulativeScheduler(BuildScheduler):
     '''
     def __init__(self, num_commits=3):
         self.num_commits = num_commits
+
+    def take_params(self, params):
+        self.num_commits = int(params[0])
 
     def schedule(self, task_queue):
         if len(task_queue) > self.num_commits:
@@ -65,8 +79,8 @@ class BeakerLoadAvareScheduler(LoadAvareScheduler):
             high = free_systems)
 
     def check_beaker(self):
-        cmd = 'bkr list-systems --free'
-        # TODO --type=TYPE?
+        cmd = 'bkr list-systems --free --type=Machine'
+        return False
         try:
             out = subprocess.check_output(cmd.split())
         except subprocess.CalledProcessError:
