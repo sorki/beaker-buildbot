@@ -2,6 +2,8 @@
 import logging
 import subprocess
 
+from beaker_buildbot.core import rule
+
 class BuildBot(object):
     def __init__(self, work_dir, schedulers):
         self.work_dir = work_dir
@@ -37,10 +39,13 @@ class BuildBot(object):
 
 def main():
     git_hash = '3e0a42bc629f0ff13a581511838d52e6513f5b15'
-    print "Asyncore received %s" % git_hash
-
+    #print "Asyncore received %s" % git_hash
+    rule_str = '((BeakerLoadAvare)) && ((Nightly || Cumulative[3]))'
+    #rule_str = '((BeakerLoadAvare)) && ((Nightly[0,24] || Cumulative[3]))'
+    print rule_str
+    scheduler = rule.RuleSchedule(rule_str)
+    print scheduler.schedule()
 
 if __name__ == "__main__":
     main()
 
-schedulers = 'BeakerLoadAvare and (Nightly or Cumulative(3))'
